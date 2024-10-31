@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const todoInput = document.querySelector('.todo-input');
     const todoList = document.querySelector('.todo-list');
 
+    function updateLocalStorage() {
+        const tasks = [];
+        document.querySelectorAll('.list-item').forEach(item => {
+            const taskText = item.querySelector('.task-text').innerText;
+            const isCompleted = item.querySelector('.text-textbox').checked;
+            tasks.push({ text: taskText, completed: isCompleted });
+        });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
     function createTask(text, completed = false) {
         const listItem = document.createElement('li');
         listItem.className = 'list-item';
@@ -45,23 +55,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (taskText) {
             createTask(taskText);
             todoInput.value = '';
+        } else {
+            alert('Empty text can not be a task');
         }
     });
 
     clearButton.addEventListener('click', () => {
-        todoList.innerHTML = '';
-        localStorage.removeItem('tasks');
+        const confirmClear = confirm('Are you sure?');
+        if (confirmClear) {
+            todoList.innerHTML = '';
+            localStorage.removeItem('tasks');
+        }
     });
-
-    function updateLocalStorage() {
-        const tasks = [];
-        document.querySelectorAll('.list-item').forEach(item => {
-            const taskText = item.querySelector('.task-text').innerText;
-            const isCompleted = item.querySelector('.text-textbox').checked;
-            tasks.push({ text: taskText, completed: isCompleted });
-        });
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
 
     window.addEventListener('load', () => {
         const storedTasks = JSON.parse(localStorage.getItem('tasks'));
